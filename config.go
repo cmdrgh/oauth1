@@ -56,6 +56,16 @@ func NewClient(ctx context.Context, config *Config, token *Token) *http.Client {
 	return &http.Client{Transport: transport}
 }
 
+//
+func NewClientRoundTripper(roundTripper http.RoundTripper, config *Config, token *Token) *http.Client {
+	transport := &Transport{
+		Base:   roundTripper,
+		source: StaticTokenSource(token),
+		auther: newAuther(config),
+	}
+	return &http.Client{Transport: transport}
+}
+
 // RequestToken obtains a Request token and secret (temporary credential) by
 // POSTing a request (with oauth_callback in the auth header) to the Endpoint
 // RequestTokenURL. The response body form is validated to ensure
